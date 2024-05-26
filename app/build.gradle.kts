@@ -72,10 +72,10 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
 
     // Extended Icons
-    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.material.icons.extended)
 
     // Navigation Compose
-    implementation("androidx.navigation:navigation-compose")
+    implementation(libs.navigation.compose)
 
     // Dagger - Hilt
     implementation(libs.hilt.android)
@@ -85,6 +85,7 @@ dependencies {
     // Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    //noinspection KaptUsageInsteadOfKsp
     kapt(libs.room.compiler)
     testImplementation(libs.room.testing)
     androidTestImplementation(libs.room.testing)
