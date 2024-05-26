@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.BookmarkAdd
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,12 +40,13 @@ fun HomeScreen(
     state: HomeState,
     onBookmarkChange: (note: Note) -> Unit,
     onDeleteNote: (Long) -> Unit,
-    onNoteClicked: (Long) -> Unit
+    onNoteClicked: (Long) -> Unit,
 ) {
-    when(state.notes) {
+    when (state.notes) {
         is ScreenViewState.Loading -> {
             CircularProgressIndicator()
         }
+
         is ScreenViewState.Success -> {
             val notes = state.notes.data
             HomeDetail(
@@ -55,6 +57,7 @@ fun HomeScreen(
                 onNoteClicked = onNoteClicked
             )
         }
+
         is ScreenViewState.Error -> {
             Text(
                 text = state.notes.message ?: "Unknown Error",
@@ -64,20 +67,21 @@ fun HomeScreen(
     }
 }
 
+
 @Composable
-fun HomeDetail(
+private fun HomeDetail(
     notes: List<Note>,
     modifier: Modifier,
     onBookmarkChange: (note: Note) -> Unit,
     onDeleteNote: (Long) -> Unit,
-    onNoteClicked: (Long) -> Unit
+    onNoteClicked: (Long) -> Unit,
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         contentPadding = PaddingValues(4.dp),
         modifier = modifier
     ) {
-        itemsIndexed(notes){ index, note ->
+        itemsIndexed(notes) { index, note ->
             NoteCard(
                 index = index,
                 note = note,
@@ -87,15 +91,17 @@ fun HomeDetail(
             )
         }
     }
+
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteCard(
     index: Int,
     note: Note,
     onBookmarkChange: (note: Note) -> Unit,
     onDeleteNote: (Long) -> Unit,
-    onNoteClicked: (Long) -> Unit
+    onNoteClicked: (Long) -> Unit,
 ) {
     val isEvenIndex = index % 2 == 0
     val shape = when {
@@ -105,6 +111,7 @@ fun NoteCard(
                 bottomEnd = 50f
             )
         }
+
         else -> {
             RoundedCornerShape(
                 topEnd = 50f,
@@ -112,19 +119,15 @@ fun NoteCard(
             )
         }
     }
-    val icon = if (note.isBookMarked) Icons.Default.BookmarkRemove else Icons.Outlined.BookmarkAdd
-
+    val icon = if (note.isBookMarked) Icons.Default.BookmarkRemove
+    else Icons.Outlined.BookmarkAdd
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
+        modifier = Modifier.fillMaxWidth().padding(4.dp),
         shape = shape,
         onClick = { onNoteClicked(note.id) }
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
         ) {
             Text(
                 text = note.title,
@@ -139,7 +142,6 @@ fun NoteCard(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.bodyMedium
             )
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -148,13 +150,13 @@ fun NoteCard(
                 IconButton(onClick = { onDeleteNote(note.id) }) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete"
+                        contentDescription = "Delete",
                     )
                 }
                 IconButton(onClick = { onBookmarkChange(note) }) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = "Bookmark Icons (Delete/Add)"
+                        contentDescription = "Bookmark",
                     )
                 }
             }
